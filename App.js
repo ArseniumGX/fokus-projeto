@@ -2,7 +2,7 @@ const cardButtons = document.querySelectorAll(".app__card-button");
 const iconeBtn = document.querySelector(".app__card-primary-butto-icon");
 const titulo = document.querySelector(".app__title");
 const tempoTela = document.querySelector("#timer");
-
+const html = document.querySelector("html");
 const musica = new Audio("./sons/luna-rise-part-one.mp3");
 const playSom = new Audio("./sons/play.wav");
 const playPause = new Audio("./sons/pause.mp3");
@@ -55,7 +55,7 @@ function mudarContexto(nome) {
 }
 
 function contexto(contexto) {
-	document.querySelector("html").dataset.contexto = contexto;
+	html.dataset.contexto = contexto;
 	document
 		.querySelector(".app__image")
 		.setAttribute("src", `./imagens/${contexto}.png`);
@@ -68,6 +68,11 @@ function removeActive() {
 function contagemRegressiva() {
 	if (tempoDecorridoSegundos <= 0) {
 		playBeep.play();
+		const focoAtivo = html.getAttribute("data-contexto") == "foco";
+		if (focoAtivo) {
+			const evento = new CustomEvent("FocoFinalizado");
+			document.dispatchEvent(evento);
+		}
 		zerar();
 		return;
 	}
@@ -99,7 +104,7 @@ function mostrarTempo() {
 	const tempo = new Date(tempoDecorridoSegundos * 1000);
 	const tempoFormate = tempo.toLocaleTimeString("pt-Br", {
 		minute: "2-digit",
-		second: "2-digit",
+		second: "2-digit"
 	});
 	tempoTela.innerHTML = tempoFormate;
 }
